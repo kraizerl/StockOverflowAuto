@@ -203,6 +203,23 @@ export default function BrownianSimulator() {
     },
   };
 
+  const downloadCsv = () => {
+    if (dataPoints.length === 0) return;
+    const header = "Day,Price\n";
+    const rows = dataPoints
+      .map((p, i) => `${i + 1},${p.toFixed(2)}`)
+      .join("\n");
+    const blob = new Blob([header + rows], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "simulation.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="min-h-screen bg-black flex items-center justify-center px-4">
       <div className="p-6 max-w-xl w-full mx-auto bg-gray-900 rounded-lg shadow-lg border border-gray-700">
@@ -366,6 +383,14 @@ export default function BrownianSimulator() {
               className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded transition"
             >
               Stop
+            </button>
+          )}
+          {dataPoints.length > 0 && (
+            <button
+              onClick={downloadCsv}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded transition"
+            >
+              Export CSV
             </button>
           )}
         </div>
