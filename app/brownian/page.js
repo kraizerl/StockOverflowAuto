@@ -17,6 +17,8 @@ const POPULAR_TICKERS = [
   { symbol: "MSFT", name: "Microsoft" },
   { symbol: "GOOG", name: "Alphabet" },
   { symbol: "NVDA", name: "NVIDIA" },
+  { symbol: "META", name: "Meta Platforms" },
+  { symbol: "TSLA", name: "Tesla" }
 ];
 
 const NAME_TO_SYMBOL = POPULAR_TICKERS.reduce((acc, t) => {
@@ -78,6 +80,9 @@ export default function BrownianSimulator() {
         throw new Error('Failed to fetch');
       }
       const json = await res.json();
+      if (json.price != null && !isNaN(json.price)) {
+        setInitialPrice(parseFloat(json.price.toFixed(2)));
+      }
       setVolatility(parseFloat(json.volatility.toFixed(2)));
       setDrift(parseFloat(json.drift.toFixed(2)));
     } catch (err) {
