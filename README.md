@@ -14,10 +14,10 @@ Or Manually
    npm install react-chartjs-2 chart.js
    ```
 2. Start the development server:
-   ```bash
-   npx next dev
-   ```
-3. Open `http://localhost:3000` in your browser and click **Launch Simulator** to access the Brownian page.
+ ```bash
+  npx next dev
+  ```
+3. Open `http://localhost:3000` in your browser and click **Launch Simulator** to access the Brownian page. Use the interval dropdown to fetch historical data in daily, hourly, or 5 minute increments.
 
 ## App Structure
 
@@ -57,11 +57,11 @@ Chart.js renders these points as a line chart that continuously updates while th
 
 ## Stock Statistics Endpoint
 
-The API route `/api/stockstats` retrieves recent daily prices for a symbol from Yahoo Finance, computes log returns, and returns the mean (drift) and standard deviation (volatility):
+The API route `/api/stockstats` retrieves historical prices for a symbol from Yahoo Finance. You can pass a query parameter `interval` (`1d`, `1h`, or `5m`) to control the data resolution. The endpoint computes log returns and returns the mean (drift) and standard deviation (volatility):
 
 ```javascript
 const res = await fetch(
-  `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?range=1y&interval=1d`,
+  `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?range=${range}&interval=${interval}`,
   { headers: { 'User-Agent': 'Mozilla/5.0' } }
 );
 const json = await res.json();
@@ -107,7 +107,7 @@ These values are returned to the client and can pre-fill the simulator inputs.
   ```
   【F:app/layout.js†L19-L28】
 
-- **Simulation Controls** – Users can adjust initial price, volatility, drift, and the number of points displayed. When running, the graph updates every two seconds.
+- **Simulation Controls** – Users can adjust initial price, volatility, drift, and the number of points displayed. You can also choose the historical data interval (1d, 1h, or 5m) used to seed the simulator. When running, the graph updates every two seconds.
 
 ## License
 

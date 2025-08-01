@@ -3,13 +3,18 @@ import { NextResponse } from 'next/server';
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const symbol = searchParams.get('symbol');
+  const intervalParam = searchParams.get('interval') || '1d';
+  const allowed = ['1d', '1h', '5m'];
+  const interval = allowed.includes(intervalParam) ? intervalParam : '1d';
+  const rangeMap = { '1d': '1y', '1h': '1mo', '5m': '1mo' };
+  const range = rangeMap[interval];
   if (!symbol) {
     return NextResponse.json({ error: 'Missing symbol' }, { status: 400 });
   }
 
   try {
     const res = await fetch(
-      `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?range=1y&interval=1d`,
+      `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?range=${range}&interval=${interval}`,
       {
         headers: { 'User-Agent': 'Mozilla/5.0' },
       }
