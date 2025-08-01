@@ -31,6 +31,7 @@ export default function BrownianSimulator() {
   const [volatility, setVolatility] = useState(1); // Stored as percentage (1 = 1%)
   const [drift, setDrift] = useState(0.1); // Stored as percentage (0.1 = 0.1%)
   const [days, setDays] = useState(100);
+  const [interval, setInterval] = useState("1d");
   const [dataPoints, setDataPoints] = useState([]);
   const [isRunning, setIsRunning] = useState(false);
   const [symbol, setSymbol] = useState("");
@@ -73,7 +74,9 @@ export default function BrownianSimulator() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(`/api/stockstats?symbol=${normalized}`);
+      const res = await fetch(
+        `/api/stockstats?symbol=${normalized}&interval=${interval}`
+      );
       if (!res.ok) {
         throw new Error('Failed to fetch');
       }
@@ -121,7 +124,12 @@ export default function BrownianSimulator() {
       x: {
         title: {
           display: true,
-          text: "Time (Days)",
+          text:
+            interval === "1d"
+              ? "Time (Days)"
+              : interval === "1h"
+              ? "Time (Hours)"
+              : "Time",
           color: "#ddd",
           font: { size: 16, weight: "bold" },
         },
@@ -288,6 +296,20 @@ export default function BrownianSimulator() {
               onChange={(e) => setDrift(parseFloat(e.target.value) || 0)}
               className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white bg-gray-800"
             />
+          </label>
+
+          <label className="flex flex-col">
+            <span className="font-semibold mb-1 text-gray-300">Interval</span>
+            <select
+              disabled={isRunning}
+              value={interval}
+              onChange={(e) => setInterval(e.target.value)}
+              className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white bg-gray-800"
+            >
+              <option value="1d">1d</option>
+              <option value="1h">1h</option>
+              <option value="5m">5m</option>
+            </select>
           </label>
 
           <label className="flex flex-col">
